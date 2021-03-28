@@ -12,6 +12,11 @@ function attacher(options = {}) {
   return transformer
 
   async function transformer(tree) {
+    /**
+     * Since `getHighlighter` is async, this means that the `unified` processor
+     * cannot be run with `processSync`. We could accept a `shiki` instance via
+     * plugin options to get around this.
+     */
     const highlighter = await shiki.getHighlighter({ theme })
 
     visit(tree, 'element', visitor)
@@ -30,6 +35,7 @@ function attacher(options = {}) {
       try {
         /**
          * There probably is a better way than parsing the html string returned by shiki.
+         * E.g. generate hast with `hastscript` from tokens returned by `highlighter.codeToThemedTokens`.
          */
         const code = parse({
           type: 'raw',
