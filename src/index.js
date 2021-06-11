@@ -1,25 +1,16 @@
 const parse = require('hast-util-raw')
 const toString = require('hast-util-to-string')
-const shiki = require('shiki')
 const visit = require('unist-util-visit')
 
 /**
  * @see https://github.com/mapbox/rehype-prism/blob/main/index.js
  */
-function attacher(options = {}) {
-  const theme = options.theme !== undefined ? options.theme : 'nord'
-  const langs = options.langs !== undefined ? options.langs : undefined
+function attacher(options) {
+  const highlighter = options.highlighter
 
   return transformer
 
   async function transformer(tree) {
-    /**
-     * Since `getHighlighter` is async, this means that the `unified` processor
-     * cannot be run with `processSync`. We could accept a `highlighter` instance
-     * via plugin options to get around this.
-     */
-    const highlighter = await shiki.getHighlighter({ theme, langs })
-
     visit(tree, 'element', visitor)
 
     function visitor(node, _index, parent) {

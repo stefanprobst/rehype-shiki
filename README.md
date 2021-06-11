@@ -5,35 +5,46 @@ Highlight code blocks in html with [`shiki`](https://github.com/shikijs/shiki).
 ## How to install
 
 ```sh
-yarn add @stefanprobst/rehype-shiki
+yarn add shiki @stefanprobst/rehype-shiki
 ```
 
 ## How to use
 
 This package is a [`rehype`](https://github.com/rehypejs/rehype) plugin.
 
-Note that `shiki` only runs async, so you must use the `process`, not the
-`processSync` method on your [`unified`](https://github.com/unifiedjs/unified)
-processor.
-
 To highlight code blocks in html:
 
 ````js
 const unified = require("unified")
 const fromHtml = require("rehype-parse")
+const shiki = require("shiki")
 const withShiki = require("@stefanprobst/rehype-shiki")
 const toHtml = require("rehype-stringify")
 
 const doc = "```js\nconst hello = 'World';\n```\n"
 
-const processor = unified().use(fromHtml).use(withShiki).use(toHtml)
+async function createProcessor() {
+  const highlighter = await shiki.getHighlighter({ theme: gloom })
 
-processor.process(doc).then((vfile) => {
-  console.log(vfile.toString())
-})
+  const processor = unified()
+    .use(fromHtml)
+    .use(withShiki, { highlighter })
+    .use(toHtml)
+
+  return processor
+}
+
+createProcessor()
+  .then((processor) => processor.process(doc))
+  .then((vfile) => {
+    console.log(String(vfile))
+  })
 ````
 
-## Options
+## Configuration
+
+This plugin accepts a preconfigured `highlighter` instance created with
+`shiki.getHighlighter`.
 
 ### Theme
 
@@ -48,9 +59,11 @@ const gloom = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), "gloom.json"), "utf-8"),
 )
 
+const highlighter = await shiki.getHighlighter({ theme: gloom })
+
 const processor = unified()
   .use(fromHtml)
-  .use(withShiki, { theme: gloom })
+  .use(withShiki, { highlighter })
   .use(toHtml)
 ```
 
@@ -71,9 +84,13 @@ const sparql = {
   // ),
 }
 
+const highlighter = await shiki.getHighlighter({
+  langs: [...shiki.BUNDLED_LANGUAGES, sparql],
+})
+
 const processor = unified()
   .use(fromHtml)
-  .use(withShiki, { langs: [...shiki.BUNDLED_LANGUAGES, sparql] })
+  .use(withShiki, { highlighter })
   .use(toHtml)
 ```
 

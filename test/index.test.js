@@ -1,6 +1,7 @@
 const fs = require('fs')
 const fromHtml = require('rehype-parse')
 const toHtml = require('rehype-stringify')
+const shiki = require('shiki')
 const unified = require('unified')
 const withShiki = require('../src')
 
@@ -8,13 +9,22 @@ const fixture = fs.readFileSync(__dirname + '/fixtures/test.html', {
   encoding: 'utf-8',
 })
 
-const processor = unified()
-  .use(fromHtml, { fragment: true })
-  .use(withShiki)
-  .use(toHtml)
+async function createProcessor() {
+  const highlighter = await shiki.getHighlighter({ theme: 'nord' })
+
+  const processor = unified()
+    .use(fromHtml, { fragment: true })
+    .use(withShiki, { highlighter })
+    .use(toHtml)
+
+  return processor
+}
 
 it('highlights code blocks in html', async () => {
+  const processor = await createProcessor()
+
   const vfile = await processor.process(fixture)
+
   expect(vfile.toString()).toMatchInlineSnapshot(`
     "<h1>Heading</h1>
     <p>Text</p>
