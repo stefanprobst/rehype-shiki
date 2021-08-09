@@ -8,19 +8,22 @@ const withShiki = require('../src')
 const fixture = fs.readFileSync(__dirname + '/fixtures/test.html', {
   encoding: 'utf-8',
 })
+const unknown = fs.readFileSync(__dirname + '/fixtures/unknown.html', {
+  encoding: 'utf-8',
+})
 
-async function createProcessor() {
+async function createProcessor(options = {}) {
   const highlighter = await shiki.getHighlighter({ theme: 'nord' })
 
   const processor = unified()
     .use(fromHtml, { fragment: true })
-    .use(withShiki, { highlighter })
+    .use(withShiki, { highlighter, ...options })
     .use(toHtml)
 
   return processor
 }
 
-it('highlights code blocks in html', async () => {
+it('highlights code block in html', async () => {
   const processor = await createProcessor()
 
   const vfile = await processor.process(fixture)
@@ -34,4 +37,29 @@ it('highlights code blocks in html', async () => {
     <p>More text</p>
     "
   `)
+})
+
+it('ignores code block with unknown language', async () => {
+  const processor = await createProcessor()
+
+  const vfile = await processor.process(unknown)
+
+  expect(vfile.toString()).toMatchInlineSnapshot(`
+    "<h1>Heading</h1>
+    <p>Text</p>
+    <pre style=\\"background-color: #2e3440ff\\">  <code class=\\"language-unknown\\">
+        const hello = \\"World\\"
+      </code>
+    </pre>
+    <p>More text</p>
+    "
+  `)
+})
+
+it('throws when code block has unknown language and ignoreUnknownLanguage is set to false', async () => {
+  const processor = await createProcessor({ ignoreUnknownLanguage: false })
+
+  return expect(processor.process(unknown)).rejects.toThrow(
+    'No language registration for unknown',
+  )
 })

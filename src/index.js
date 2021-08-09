@@ -6,7 +6,12 @@ const visit = require('unist-util-visit')
  * @see https://github.com/mapbox/rehype-prism/blob/main/index.js
  */
 function attacher(options) {
+  /** @type {import('shiki').Highlighter} */
   const highlighter = options.highlighter
+  const loadedLanguages = highlighter.getLoadedLanguages()
+  const bgColor = highlighter.getBackgroundColor()
+  const ignoreUnknownLanguage =
+    options.ignoreUnknownLanguage == null ? true : options.ignoreUnknownLanguage
 
   return transformer
 
@@ -20,33 +25,29 @@ function attacher(options) {
 
       const lang = getLanguage(node)
 
-      if (lang === null) {
+      if (
+        lang === null ||
+        (ignoreUnknownLanguage && !loadedLanguages.includes(lang))
+      ) {
+        parent.properties.style = `background-color: ${bgColor}`
         return
       }
 
-      try {
-        /**
-         * There probably is a better way than parsing the html string returned by shiki.
-         * E.g. generate hast with `hastscript` from tokens returned by `highlighter.codeToThemedTokens`.
-         */
-        const code = parse({
-          type: 'raw',
-          value: highlighter.codeToHtml(toString(node), lang),
-        })
+      /**
+       * There probably is a better way than parsing the html string returned by shiki.
+       * E.g. generate hast with `hastscript` from tokens returned by `highlighter.codeToThemedTokens`.
+       */
+      const code = parse({
+        type: 'raw',
+        value: highlighter.codeToHtml(toString(node), lang),
+      })
 
-        parent.properties = code.properties
-        parent.children = code.children
+      parent.properties = code.properties
+      parent.children = code.children
 
-        parent.properties.className = (
-          parent.properties.className || []
-        ).concat('language-' + lang)
-      } catch (err) {
-        if (options.ignoreMissing && /Unknown language/.test(err.message)) {
-          return
-        }
-
-        throw err
-      }
+      parent.properties.className = (parent.properties.className || []).concat(
+        'language-' + lang,
+      )
     }
   }
 }
