@@ -9,7 +9,6 @@ function attacher(options) {
   /** @type {import('shiki').Highlighter} */
   const highlighter = options.highlighter
   const loadedLanguages = highlighter.getLoadedLanguages()
-  const bgColor = highlighter.getBackgroundColor()
   const ignoreUnknownLanguage =
     options.ignoreUnknownLanguage == null ? true : options.ignoreUnknownLanguage
 
@@ -23,14 +22,10 @@ function attacher(options) {
         return
       }
 
-      const lang = getLanguage(node)
+      let lang = getLanguage(node)
 
-      if (
-        lang === null ||
-        (ignoreUnknownLanguage && !loadedLanguages.includes(lang))
-      ) {
-        parent.properties.style = `background-color: ${bgColor}`
-        return
+      if (ignoreUnknownLanguage && !loadedLanguages.includes(lang)) {
+        lang = null
       }
 
       /**
@@ -44,10 +39,6 @@ function attacher(options) {
 
       parent.properties = code.properties
       parent.children = code.children
-
-      parent.properties.className = (parent.properties.className || []).concat(
-        'language-' + lang,
-      )
     }
   }
 }

@@ -24,7 +24,7 @@ const toHtml = require("rehype-stringify")
 const doc = "```js\nconst hello = 'World';\n```\n"
 
 async function createProcessor() {
-  const highlighter = await shiki.getHighlighter({ theme: gloom })
+  const highlighter = await shiki.getHighlighter({ theme: "poimandres" })
 
   const processor = unified()
     .use(fromHtml)
