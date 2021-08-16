@@ -1,18 +1,21 @@
-const fs = require('fs')
-const fromHtml = require('rehype-parse')
-const toHtml = require('rehype-stringify')
-const shiki = require('shiki')
-const unified = require('unified')
-const withShiki = require('../src')
+import * as fs from 'fs'
+import * as path from 'path'
+
+import fromHtml from 'rehype-parse'
+import toHtml from 'rehype-stringify'
+import * as shiki from 'shiki'
+import { unified } from 'unified'
+
+import withShiki from '../src'
 
 const fixtures = {
-  known: fs.readFileSync(__dirname + '/fixtures/test.html', {
+  known: fs.readFileSync(path.resolve('./test/fixtures/test.html'), {
     encoding: 'utf-8',
   }),
-  none: fs.readFileSync(__dirname + '/fixtures/none.html', {
+  none: fs.readFileSync(path.resolve('./test/fixtures/none.html'), {
     encoding: 'utf-8',
   }),
-  unknown: fs.readFileSync(__dirname + '/fixtures/unknown.html', {
+  unknown: fs.readFileSync(path.resolve('./test/fixtures/unknown.html'), {
     encoding: 'utf-8',
   }),
 }
@@ -33,7 +36,7 @@ it('highlights code block in html', async () => {
 
   const vfile = await processor.process(fixtures.known)
 
-  expect(vfile.toString()).toMatchInlineSnapshot(`
+  expect(String(vfile)).toMatchInlineSnapshot(`
     "<h1>Heading</h1>
     <p>Text</p>
     <pre class=\\"shiki\\" style=\\"background-color: #2e3440ff\\"><code><span class=\\"line\\"></span>
@@ -49,7 +52,7 @@ it('ignores code block without language', async () => {
 
   const vfile = await processor.process(fixtures.none)
 
-  expect(vfile.toString()).toMatchInlineSnapshot(`
+  expect(String(vfile)).toMatchInlineSnapshot(`
     "<h1>Heading</h1>
     <p>Text</p>
     <pre class=\\"shiki\\" style=\\"background-color: #2e3440ff\\"><code><span class=\\"line\\"><span style=\\"color: #d8dee9ff\\">
@@ -65,7 +68,7 @@ it('ignores code block with unknown language', async () => {
 
   const vfile = await processor.process(fixtures.unknown)
 
-  expect(vfile.toString()).toMatchInlineSnapshot(`
+  expect(String(vfile)).toMatchInlineSnapshot(`
     "<h1>Heading</h1>
     <p>Text</p>
     <pre class=\\"shiki\\" style=\\"background-color: #2e3440ff\\"><code><span class=\\"line\\"><span style=\\"color: #d8dee9ff\\">

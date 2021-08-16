@@ -1,12 +1,11 @@
-const parse = require('hast-util-raw')
-const toString = require('hast-util-to-string')
-const visit = require('unist-util-visit')
+import { raw as parse } from 'hast-util-raw'
+import { toString } from 'hast-util-to-string'
+import { visit } from 'unist-util-visit'
 
 /**
  * @see https://github.com/mapbox/rehype-prism/blob/main/index.js
  */
 function attacher(options) {
-  /** @type {import('shiki').Highlighter} */
   const highlighter = options.highlighter
   const loadedLanguages = highlighter.getLoadedLanguages()
   const ignoreUnknownLanguage =
@@ -55,4 +54,4 @@ function getLanguage(node) {
   return null
 }
 
-module.exports = attacher
+export default attacher
