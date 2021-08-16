@@ -11,4 +11,4 @@ declare namespace withShiki {
 
 declare const withShiki: Plugin<[withShiki.Options]>
 
-export = withShiki
+export default withShiki

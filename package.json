@@ -62,7 +62,8 @@
   "eslintConfig": {
     "extends": [
       "@stefanprobst/eslint-config-node"
-    ]
+    ],
+    "ignorePatterns": "*.d.ts"
   },
   "simple-git-hooks": {
     "commit-msg": "yarn commitlint --edit",
