@@ -15,16 +15,16 @@ This package is a [`rehype`](https://github.com/rehypejs/rehype) plugin.
 To highlight code blocks in html:
 
 ````js
-const unified = require("unified")
-const fromHtml = require("rehype-parse")
-const shiki = require("shiki")
-const withShiki = require("@stefanprobst/rehype-shiki")
-const toHtml = require("rehype-stringify")
+import withShiki from '@stefanprobst/rehype-shiki'
+import fromHtml from 'rehype-parse'
+import toHtml from 'rehype-stringify'
+import * as shiki from 'shiki'
+import { unified } from 'unified'
 
 const doc = "```js\nconst hello = 'World';\n```\n"
 
 async function createProcessor() {
-  const highlighter = await shiki.getHighlighter({ theme: "poimandres" })
+  const highlighter = await shiki.getHighlighter({ theme: 'poimandres' })
 
   const processor = unified()
     .use(fromHtml)
@@ -56,7 +56,7 @@ as string, or load a custom theme (any TextMate/VS Code theme should work):
 // const gloom = await shiki.loadTheme(path.join(process.cwd(), 'gloom.json'))
 // const gloom = require('./gloom.json')
 const gloom = JSON.parse(
-  fs.readFileSync(path.join(process.cwd(), "gloom.json"), "utf-8"),
+  fs.readFileSync(path.join(process.cwd(), 'gloom.json'), 'utf-8'),
 )
 
 const highlighter = await shiki.getHighlighter({ theme: gloom })
@@ -75,10 +75,10 @@ can be added as TextMate grammars:
 
 ```js
 const sparql = {
-  id: "sparql",
-  scopeName: "source.sparql",
+  id: 'sparql',
+  scopeName: 'source.sparql',
   // provide either `path` or `grammar`
-  path: path.join(process.cwd(), "sparql.tmLanguage.json"),
+  path: path.join(process.cwd(), 'sparql.tmLanguage.json'),
   // grammar: JSON.parse(
   //   fs.readFileSync(path.join(process.cwd(), "sparql.tmLanguage.json")),
   // ),

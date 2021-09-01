@@ -16,7 +16,8 @@
     "lint": "eslint . --ignore-path .gitignore",
     "lint:fix": "yarn lint --fix",
     "prepare": "simple-git-hooks",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest"
+    "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest",
+    "validate": "yarn run format && yarn run lint && yarn run test"
   },
   "engines": {
     "node": "14.x",
@@ -35,13 +36,13 @@
     "@stefanprobst/prettier-config": "^1.0.5",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
+    "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.24.0",
     "eslint-plugin-jest": "^24.4.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.0",
     "jest": "^27.0.6",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
@@ -65,14 +66,17 @@
     ],
     "ignorePatterns": "*.d.ts"
   },
+  "lint-staged": {
+    "*.(js|ts)": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ],
+    "*.(json|md)": "prettier --write"
+  },
+  "prettier": "@stefanprobst/prettier-config",
   "simple-git-hooks": {
     "commit-msg": "yarn commitlint --edit",
     "pre-commit": "yarn lint-staged",
-    "pre-push": "yarn run test"
-  },
-  "lint-staged": {
-    "*.(js|ts)": "eslint --cache --fix",
-    "*.(json|md)": "prettier --write"
-  },
-  "prettier": "@stefanprobst/prettier-config"
+    "pre-push": "yarn run validate"
+  }
 }
