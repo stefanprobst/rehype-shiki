@@ -4,7 +4,7 @@ import type { Highlighter } from 'shiki'
 export interface Options {
   highlighter: Highlighter
   /** @default true */
-  ignoreMissing?: boolean
+  ignoreUnknownLanguage?: boolean
 }
 
 declare const withShiki: Plugin<[Options]>
