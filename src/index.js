@@ -13,7 +13,7 @@ function attacher(options) {
 
   return transformer
 
-  async function transformer(tree) {
+  function transformer(tree) {
     visit(tree, 'element', visitor)
 
     function visitor(node, _index, parent) {
