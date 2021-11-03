@@ -1,5 +1,5 @@
-import { raw as parse } from 'hast-util-raw'
 import { toString } from 'hast-util-to-string'
+import { codeToHast } from 'shiki-renderer-hast'
 import { visit } from 'unist-util-visit'
 
 /**
@@ -27,14 +27,7 @@ function attacher(options) {
         lang = null
       }
 
-      /**
-       * There probably is a better way than parsing the html string returned by shiki.
-       * E.g. generate hast with `hastscript` from tokens returned by `highlighter.codeToThemedTokens`.
-       */
-      const code = parse({
-        type: 'raw',
-        value: highlighter.codeToHtml(toString(node), lang),
-      })
+      const code = codeToHast(highlighter, toString(node), lang)
 
       parent.properties = code.properties
       parent.children = code.children
