@@ -24,8 +24,8 @@
     "yarn": "1.x"
   },
   "dependencies": {
-    "hast-util-raw": "^7.1.1",
     "hast-util-to-string": "^2.0.0",
+    "shiki-renderer-hast": "^1.0.3",
     "unified": "^10.1.0",
     "unist-util-visit": "^4.0.0"
   },
