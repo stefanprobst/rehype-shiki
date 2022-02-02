@@ -2,11 +2,24 @@ import { toString } from 'hast-util-to-string'
 import { codeToHast } from 'shiki-renderer-hast'
 import { visit } from 'unist-util-visit'
 
+const MISSING_HIGHLIGHTER = `Please provide a \`shiki\` highlighter instance via \`options\`.
+
+Example:
+
+const highlighter = await shiki.getHighlighter({ theme: 'poimandres' })
+const processor = rehype().use(withShiki, { highlighter })
+`
+
 /**
  * @see https://github.com/mapbox/rehype-prism/blob/main/index.js
  */
-function attacher(options) {
+function attacher(options = {}) {
   const highlighter = options.highlighter
+
+  if (!highlighter) {
+    throw new Error(MISSING_HIGHLIGHTER)
+  }
+
   const loadedLanguages = highlighter.getLoadedLanguages()
   const ignoreUnknownLanguage =
     options.ignoreUnknownLanguage == null ? true : options.ignoreUnknownLanguage

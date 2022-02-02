@@ -23,12 +23,12 @@ import { unified } from 'unified'
 
 const doc = "```js\nconst hello = 'World';\n```\n"
 
-async function createProcessor() {
+async function createProcessor(options = {}) {
   const highlighter = await shiki.getHighlighter({ theme: 'poimandres' })
 
   const processor = unified()
     .use(fromHtml)
-    .use(withShiki, { highlighter })
+    .use(withShiki, { highlighter, ...options })
     .use(toHtml)
 
   return processor
