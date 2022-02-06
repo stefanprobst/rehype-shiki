@@ -27,7 +27,7 @@
     "hast-util-to-string": "^2.0.0",
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
-    "shiki-renderer-hast": "^1.0.3",
+    "shiki-renderer-hast": "^1.1.5",
     "unified": "^10.1.0",
     "unist-util-visit": "^4.0.0"
   },

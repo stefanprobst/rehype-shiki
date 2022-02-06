@@ -4308,10 +4308,10 @@ shebang-regex@^3.0.0:
   resolved "https://registry.npmjs.org/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shiki-renderer-hast@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/shiki-renderer-hast/-/shiki-renderer-hast-1.0.3.tgz#be1374c04907c33deae4b51eb8e7edec4eac2a78"
-  integrity sha512-uX/qavXvB65xONsC8BJYpZIJzJjKoa+nYcMqVq8oJp4dPVbP5dvb69yPLuCBmkj4xUAOk+zOegEqxzoPvvJiZQ==
+shiki-renderer-hast@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/shiki-renderer-hast/-/shiki-renderer-hast-1.1.5.tgz#5156f7df8de7e1358ae3cc8420db9a6104a848b6"
+  integrity sha512-XOHX0/mIRJZnqPNGoyyJ9bUrqUwj/tLUJQ5SuU/UkQLTiSJjiHaCP17HRB7/VSQoor4+WJF3QkT8BXbipyJN0Q==
   dependencies:
     hastscript "^7.0.2"
 
