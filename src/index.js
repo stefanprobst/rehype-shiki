@@ -49,6 +49,12 @@ function attacher(options = {}) {
 }
 
 function getLanguage(node) {
+  const dataLanguage = node.properties.dataLanguage
+
+  if (dataLanguage != null) {
+    return dataLanguage
+  }
+
   const className = node.properties.className || []
 
   for (const classListItem of className) {
