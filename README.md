@@ -12,12 +12,44 @@ yarn add shiki @stefanprobst/rehype-shiki
 
 This package is a [`rehype`](https://github.com/rehypejs/rehype) plugin.
 
-To highlight code blocks in html:
+To highlight code blocks in html, specify the code block language via
+`data-language` attribute on the `<code>` element:
 
-````js
+```js
 import withShiki from '@stefanprobst/rehype-shiki'
 import fromHtml from 'rehype-parse'
 import toHtml from 'rehype-stringify'
+import * as shiki from 'shiki'
+import { unified } from 'unified'
+
+const doc = '<pre><code data-language="js">const hello = "World";</code></pre>'
+
+async function createProcessor(options = {}) {
+  const highlighter = await shiki.getHighlighter({ theme: 'poimandres' })
+
+  const processor = unified()
+    .use(fromHtml)
+    .use(withShiki, { highlighter, ...options })
+    .use(toHtml)
+
+  return processor
+}
+
+createProcessor()
+  .then((processor) => processor.process(doc))
+  .then((vfile) => {
+    console.log(String(vfile))
+  })
+```
+
+When used in a `unified` pipeline coming from Markdown, specify the code block
+language via code block meta:
+
+````js
+import withShiki from '@stefanprobst/rehype-shiki'
+import toHtml from 'rehype-stringify'
+import fromMarkdown from 'remark-parse'
+import toHast from 'remark-rehype'
 import * as shiki from 'shiki'
 import { unified } from 'unified'
 
@@ -27,7 +59,8 @@ async function createProcessor(options = {}) {
   const highlighter = await shiki.getHighlighter({ theme: 'poimandres' })
 
   const processor = unified()
-    .use(fromHtml)
+    .use(fromMarkdown)
+    .use(toHast)
     .use(withShiki, { highlighter, ...options })
     .use(toHtml)
 
@@ -102,3 +135,39 @@ grammars, concat `shiki.BUNDLED_LANGUAGES`.
 Unknown languages are ignored by default. You can set
 `ignoreUnknownLanguage: false` to throw an error when an unsupported language is
 encountered.
+
+### Highlight lines
+
+It is possible to add additional classes to specific lines. By default, a
+`highlighted` class will be added for line ranges defined like this:
+
+```html
+<pre><code data-language="js" data-highlight="2..3"
+>function hi() {
+  console.log('Hi!')
+  return true
+}</code></pre>
+```
+
+or
+
+````md
+```js {highlight: '2..3'}
+function hi() {
+  console.log('Hi!')
+  return true
+}
+```
+````
+
+You can adjust this by providing a custom `getLineOptions` function:
+
+```js
+processor.use(withShiki, {
+  highlighter,
+  getLineOptions(node) {
+    /** Access any data attributes via `node.properties`, and markdown code block metadata via `node.data.meta`. */
+    return [{ line: 2: classes: ['highlighted']}]
+  }
+})
+```
