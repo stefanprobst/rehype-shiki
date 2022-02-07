@@ -1,6 +1,6 @@
 {
   "name": "@stefanprobst/rehype-shiki",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "type": "module",
